@@ -1,0 +1,34 @@
+@import "tailwindcss";
+
+@theme {
+  --color-template-primary: #0A0A0F;
+  --color-template-orange: #F59E0B;
+  --color-template-blue: #0A0A0F;
+  --color-template-card-blue: #F5F0FF;
+  --color-template-card-brown: #FFF6E8;
+  --color-paper: #FFFBF6;
+  --color-ink: #0A0A0F;
+  --color-stone: #EAE6E1;
+  --color-brass: #F59E0B;
+  --font-template-geo: "Geologica", sans-serif;
+  --font-template-space: "Space Grotesk", sans-serif;
+  --font-template-nunito: "Nunito", sans-serif;
+  --font-template-mono: "Geist Mono", monospace;
+  --font-display: "Instrument Serif", serif;
+}
+
+/* Print-tech textures — exact Salesive */
+.salesive-grid{ background-image: linear-gradient(#0000000b 1px, transparent 1px), linear-gradient(90deg, #0000000b 1px, transparent 1px); background-size:40px 40px; }
+.salesive-section-label{ font-family: var(--font-template-space); letter-spacing:0.08em; color:var(--color-template-blue); font-size:11px; font-weight:650; }
+.salesive-heading{ font-family: var(--font-template-geo); line-height:1.1; color:#0A0A0F; font-size:26px; font-weight:560; }
+@media(min-width:640px){ .salesive-heading{ font-size:32px; } }
+@media(min-width:768px){ .salesive-heading{ font-size:38px; } }
+.salesive-copy{ font-family: var(--font-template-nunito); font-size:14px; line-height:24px; color:#6b7280; }
+@media(min-width:640px){ .salesive-copy{ font-size:16px; line-height:28px; } }
+.salesive-panel{ background:#FFFFFF; border:1px solid var(--color-stone); border-radius:0px; box-shadow: 0 1px 0 var(--color-stone) inset, 0 40px 80px rgba(10,10,15,0.04); }
+.ghost-num{ font-family: var(--font-template-mono); font-size:110px; line-height:1; font-weight:600; color:#0A0A0F; opacity:0.04; position:absolute; top:6px; left:8px; pointer-events:none; user-select:none; }
+.grain::after{ content:""; position:absolute; inset:0; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E"); opacity:0.03; pointer-events:none; }
+.magnetic{ transition: transform 0.3s cubic-bezier(0.23,1,0.32,1); will-change: transform; }
+#cursor-dot{ width:6px; height:6px; background:#0A0A0F; border-radius:50%; position:fixed; top:0; left:0; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); mix-blend-mode:difference; }
+#cursor-ring{ width:28px; height:28px; border:1px solid rgba(10,10,15,0.15); border-radius:50%; position:fixed; top:0; left:0; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); transition: width 0.2s, height 0.2s, border-color 0.2s; }
+@media (pointer: coarse){ #cursor-dot, #cursor-ring{ display:none; } }
