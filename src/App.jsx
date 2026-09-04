@@ -13,8 +13,14 @@ function FloatingChat(){
   const answers={'How much does pool cleaning cost?':'Weekly from $149 — want Saturday 10am?','Can I book for Saturday?':'Yes — 10am or 2pm open. Which works?','What does your maintenance package include?':'Weekly skimming, vacuum, chemicals — $149/mo.'}
   function ask(q){ setMsgs(m=>[...m,{from:'c',text:q}]); setTimeout(()=> setMsgs(m=>[...m,{from:'ai',text:answers[q]||'I can help — trained on your business. Want to book?'}]),400)}
   useEffect(()=>{
-    const t = setTimeout(()=> setOpen(true), 2000)
-    const onClick = ()=> setTimeout(()=> setOpen(true), 2000)
+    const showFor2s = ()=> {
+      setOpen(true)
+      setTimeout(()=> setOpen(false), 2000)
+    }
+    const t = setTimeout(showFor2s, 2000)
+    const onClick = ()=> {
+      setTimeout(showFor2s, 200)
+    }
     window.addEventListener('click', onClick)
     return ()=> { clearTimeout(t); window.removeEventListener('click', onClick) }
   },[])
