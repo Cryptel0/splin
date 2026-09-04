@@ -7,6 +7,26 @@ function ChatDemo(){
   function ask(q){ setMsgs(m=>[...m,{from:'c',text:q}]); setTimeout(()=> setMsgs(m=>[...m,{from:'ai',text:answers[q]||'I can help — want to book?'}]),450)}
   return (<div className="salesive-panel !bg-white !text-[#0A0A0F] p-0 overflow-hidden"><div className="flex items-center justify-between px-4 py-3 border-b border-[#EAE6E1] bg-[#FFFBF6]"><span className="w-2 h-2 bg-[#00D084] animate-pulse"></span><span className="font-mono text-[11px] font-[600]">Splin AI · Pool Demo</span></div><div className="p-4 space-y-3 max-h-[300px] overflow-auto">{msgs.map((m,i)=> m.from==='c' ? <div key={i} className="flex gap-2"><div className="w-7 h-7 bg-[#EAE6E1] flex items-center justify-center font-mono text-[10px]">C</div><div className="max-w-[78%] bg-[#FFFBF6] border border-[#EAE6E1] px-3 py-2 text-[13px]">{m.text}</div></div> : <div key={i} className="flex gap-2 justify-end"><div className="max-w-[78%] bg-[#0A0A0F] text-white px-3 py-2 text-[13px]">{m.text}</div><div className="w-7 h-7 bg-[#F59E0B] flex items-center justify-center font-mono text-[10px] text-white">AI</div></div>)}</div><div className="p-3 border-t border-[#EAE6E1] flex gap-2"><button onClick={()=>ask('How much does pool cleaning cost?')} className="font-mono text-[11px] px-2.5 py-1.5 border border-[#EAE6E1] bg-white">How much does pool cleaning cost?</button><button onClick={()=>ask('Can I book for Saturday?')} className="font-mono text-[11px] px-2.5 py-1.5 border border-[#EAE6E1] bg-white">Can I book for Saturday?</button><button onClick={()=>ask('Book a service')} className="shrink-0 h-9 px-4 bg-[#0A0A0F] text-white font-mono text-[11px]">Book →</button></div></div>)
 }
+function FloatingChat(){
+  const [open,setOpen]=useState(false)
+  const [msgs,setMsgs]=useState([{from:'ai',text:'Hi — I’m Splin AI. Ask me about services, pricing, or booking.'}])
+  const answers={'How much does pool cleaning cost?':'Weekly from $149 — want Saturday 10am?','Can I book for Saturday?':'Yes — 10am or 2pm open. Which works?','What does your maintenance package include?':'Weekly skimming, vacuum, chemicals — $149/mo.'}
+  function ask(q){ setMsgs(m=>[...m,{from:'c',text:q}]); setTimeout(()=> setMsgs(m=>[...m,{from:'ai',text:answers[q]||'I can help — trained on your business. Want to book?'}]),400)}
+  return (
+    <div className="fixed bottom-4 right-4 z-[70] flex flex-col items-end gap-3">
+      {open && (
+        <div className="w-[360px] max-w-[92vw] h-[420px] bg-white border border-[#EAE6E1] shadow-[0_20px_60px_rgba(10,10,15,0.15)] flex flex-col overflow-hidden">
+          <div className="h-10 bg-[#0A0A0F] text-white flex items-center justify-between px-3"><span className="flex items-center gap-2 font-mono text-[11px] font-[600]"><span className="w-2 h-2 bg-[#00D084] animate-pulse"></span> Splin AI — Live</span><button onClick={()=>setOpen(false)} className="w-7 h-7 flex items-center justify-center hover:bg-white/10">×</button></div>
+          <div className="flex-1 p-3 space-y-3 overflow-auto bg-[#FFFBF6]">{msgs.map((m,i)=> m.from==='c' ? <div key={i} className="flex gap-2 justify-end"><div className="max-w-[78%] bg-[#0A0A0F] text-white px-3 py-2 text-[12px]">{m.text}</div></div> : <div key={i} className="flex gap-2"><div className="w-6 h-6 bg-[#F59E0B] text-white flex items-center justify-center font-mono text-[9px]">AI</div><div className="max-w-[78%] bg-white border border-[#EAE6E1] px-3 py-2 text-[12px]">{m.text}</div></div>)}</div>
+          <div className="p-2 border-t border-[#EAE6E1] bg-white flex gap-1.5 flex-wrap"><button onClick={()=>ask('How much does pool cleaning cost?')} className="font-mono text-[10px] px-2 py-1 border border-[#EAE6E1] bg-white">Pricing?</button><button onClick={()=>ask('Can I book for Saturday?')} className="font-mono text-[10px] px-2 py-1 border border-[#EAE6E1] bg-white">Book Saturday?</button><button onClick={()=>ask('What does your maintenance package include?')} className="font-mono text-[10px] px-2 py-1 bg-[#0A0A0F] text-white">Package?</button></div>
+        </div>
+      )}
+      <button onClick={()=>setOpen(!open)} className="w-12 h-12 bg-[#0A0A0F] text-white flex items-center justify-center shadow-[0_8px_24px_rgba(10,10,15,0.2)] hover:bg-black transition" aria-label="Open chat">
+        {open ? '×' : '💬'}
+      </button>
+    </div>
+  )
+}
 export default function App(){
   const [selectedPricing, setSelectedPricing] = useState(null)
   useEffect(()=>{
@@ -34,6 +54,7 @@ export default function App(){
     })
   },[])
   return (<div className="bg-[#FFFBF6] text-[#0A0A0F] antialiased">
+    <FloatingChat />
     <div id="cursor-dot" style={{width:6,height:6,background:'#0A0A0F',borderRadius:'50%',position:'fixed',top:0,left:0,pointerEvents:'none',zIndex:9999,transform:'translate(-50%,-50%)',mixBlendMode:'difference'}}></div>
     <div id="cursor-ring" style={{width:28,height:28,border:'1px solid rgba(10,10,15,0.15)',borderRadius:'50%',position:'fixed',top:0,left:0,pointerEvents:'none',zIndex:9998,transform:'translate(-50%,-50%)'}}></div>
     <div className="overflow-hidden border-b border-[#EAE6E1] bg-[#0A0A0F] text-white"><div className="max-w-[1320px] mx-auto px-5 sm:px-7 py-2 flex items-center justify-center gap-2 text-[12px]"><span className="hidden sm:inline-flex px-2 py-0.5 bg-white text-[#0A0A0F] font-mono text-[10px]">Early Access</span><span>Modern websites + AI agents — get your free audit today.</span></div></div>
