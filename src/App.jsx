@@ -12,6 +12,12 @@ function FloatingChat(){
   const [msgs,setMsgs]=useState([{from:'ai',text:'Hi — I’m Splin AI. Ask me about services, pricing, or booking.'}])
   const answers={'How much does pool cleaning cost?':'Weekly from $149 — want Saturday 10am?','Can I book for Saturday?':'Yes — 10am or 2pm open. Which works?','What does your maintenance package include?':'Weekly skimming, vacuum, chemicals — $149/mo.'}
   function ask(q){ setMsgs(m=>[...m,{from:'c',text:q}]); setTimeout(()=> setMsgs(m=>[...m,{from:'ai',text:answers[q]||'I can help — trained on your business. Want to book?'}]),400)}
+  useEffect(()=>{
+    const t = setTimeout(()=> setOpen(true), 2000)
+    const onClick = ()=> setTimeout(()=> setOpen(true), 2000)
+    window.addEventListener('click', onClick)
+    return ()=> { clearTimeout(t); window.removeEventListener('click', onClick) }
+  },[])
   return (
     <div className="fixed bottom-4 right-4 z-[70] flex flex-col items-end gap-3">
       {open && (
