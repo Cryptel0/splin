@@ -9,28 +9,41 @@ function ChatDemo(){
 }
 function FloatingChat(){
   const [open,setOpen]=useState(false)
+  const [input,setInput]=useState("")
   const [msgs,setMsgs]=useState([{from:'ai',text:'Hi — I’m Splin AI. Ask me about services, pricing, or booking.'}])
   const answers={'How much does pool cleaning cost?':'Weekly from $149 — want Saturday 10am?','Can I book for Saturday?':'Yes — 10am or 2pm open. Which works?','What does your maintenance package include?':'Weekly skimming, vacuum, chemicals — $149/mo.'}
   function ask(q){ setMsgs(m=>[...m,{from:'c',text:q}]); setTimeout(()=> setMsgs(m=>[...m,{from:'ai',text:answers[q]||'I can help — trained on your business. Want to book?'}]),400)}
+  function send(){
+    const q=input.trim()
+    if(!q) return
+    setMsgs(m=>[...m,{from:'c',text:q}])
+    setInput("")
+    setTimeout(()=>{
+      const lower=q.toLowerCase()
+      let reply='I can help — trained on your business. Want to book?'
+      if(lower.includes('price')||lower.includes('cost')||lower.includes('149')) reply=answers['How much does pool cleaning cost?']
+      else if(lower.includes('saturday')||lower.includes('book')) reply=answers['Can I book for Saturday?']
+      else if(lower.includes('package')||lower.includes('include')) reply=answers['What does your maintenance package include?']
+      else if(lower.includes('miami')) reply='Yes — we service Miami-Dade + Broward. Weekly from $149. Want Saturday 10am?'
+      setMsgs(m=>[...m,{from:'ai',text:reply}])
+    },400)
+  }
   useEffect(()=>{
-    const showFor2s = ()=> {
-      setOpen(true)
-      setTimeout(()=> setOpen(false), 2000)
-    }
-    const t = setTimeout(showFor2s, 2000)
-    const onClick = ()=> {
-      setTimeout(showFor2s, 200)
-    }
-    window.addEventListener('click', onClick)
-    return ()=> { clearTimeout(t); window.removeEventListener('click', onClick) }
+    const show = setTimeout(()=> setOpen(true), 2000)
+    const hide = setTimeout(()=> setOpen(false), 4000)
+    return ()=> { clearTimeout(show); clearTimeout(hide) }
   },[])
   return (
     <div className="fixed bottom-4 right-4 z-[70] flex flex-col items-end gap-3">
       {open && (
         <div className="w-[360px] max-w-[92vw] h-[420px] bg-white border border-[#EAE6E1] shadow-[0_20px_60px_rgba(10,10,15,0.15)] flex flex-col overflow-hidden">
-          <div className="h-10 bg-[#0A0A0F] text-white flex items-center justify-between px-3"><span className="flex items-center gap-2 font-mono text-[11px] font-[600]"><span className="w-2 h-2 bg-[#00D084] animate-pulse"></span> Splin AI — Live</span><button onClick={()=>setOpen(false)} className="w-7 h-7 flex items-center justify-center hover:bg-white/10">×</button></div>
+          <div className="h-10 bg-[#0A0A0F] text-white flex items-center justify-between px-3"><span className="flex items-center gap-2 font-mono text-[11px] font-[600]"><span className="w-2 h-2 bg-[#00D084] animate-pulse"></span> Splin AI — Live</span><button onClick={()=>setOpen(false)} className="w-7 h-7 flex items-center justify-center hover:bg-white/10" aria-label="Close chat">×</button></div>
           <div className="flex-1 p-3 space-y-3 overflow-auto bg-[#FFFBF6]">{msgs.map((m,i)=> m.from==='c' ? <div key={i} className="flex gap-2 justify-end"><div className="max-w-[78%] bg-[#0A0A0F] text-white px-3 py-2 text-[12px]">{m.text}</div></div> : <div key={i} className="flex gap-2"><div className="w-6 h-6 bg-[#F59E0B] text-white flex items-center justify-center font-mono text-[9px]">AI</div><div className="max-w-[78%] bg-white border border-[#EAE6E1] px-3 py-2 text-[12px]">{m.text}</div></div>)}</div>
-          <div className="p-2 border-t border-[#EAE6E1] bg-white flex gap-1.5 flex-wrap"><button onClick={()=>ask('How much does pool cleaning cost?')} className="font-mono text-[10px] px-2 py-1 border border-[#EAE6E1] bg-white">Pricing?</button><button onClick={()=>ask('Can I book for Saturday?')} className="font-mono text-[10px] px-2 py-1 border border-[#EAE6E1] bg-white">Book Saturday?</button><button onClick={()=>ask('What does your maintenance package include?')} className="font-mono text-[10px] px-2 py-1 bg-[#0A0A0F] text-white">Package?</button></div>
+          <div className="p-2 border-t border-[#EAE6E1] bg-white flex gap-1.5">
+            <input value={input} onChange={e=>setInput(e.target.value)} onKeyDown={e=>{ if(e.key==='Enter') send() }} placeholder="Type a message..." className="flex-1 h-8 px-2 border border-[#EAE6E1] bg-[#FFFBF6] font-mono text-[11px] focus:outline-none focus:border-[#F59E0B]" />
+            <button onClick={send} className="h-8 px-3 bg-[#0A0A0F] text-white font-mono text-[11px] font-[600]">Send</button>
+          </div>
+          <div className="px-2 pb-2 bg-white flex gap-1.5 flex-wrap"><button onClick={()=>ask('How much does pool cleaning cost?')} className="font-mono text-[10px] px-2 py-1 border border-[#EAE6E1] bg-white">Pricing?</button><button onClick={()=>ask('Can I book for Saturday?')} className="font-mono text-[10px] px-2 py-1 border border-[#EAE6E1] bg-white">Book Saturday?</button><button onClick={()=>ask('What does your maintenance package include?')} className="font-mono text-[10px] px-2 py-1 bg-[#0A0A0F] text-white">Package?</button></div>
         </div>
       )}
       <button onClick={()=>setOpen(!open)} className="w-12 h-12 bg-[#0A0A0F] text-white flex items-center justify-center shadow-[0_8px_24px_rgba(10,10,15,0.2)] hover:bg-black transition" aria-label="Open chat">
